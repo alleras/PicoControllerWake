@@ -1,0 +1,52 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:PicoControllerWake_Companion.ViewModels"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:materialIcons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia" 
+        mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="450"
+        Width="400" Height="450"
+        x:Class="PicoControllerWake_Companion.Views.MainWindow"
+        x:DataType="vm:MainWindowViewModel"
+        Icon="/Assets/avalonia-logo.ico"
+        Title="PicoControllerWake">
+
+    <Design.DataContext>
+        <!-- This only sets the DataContext for the previewer in an IDE,
+             to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
+        <vm:MainWindowViewModel/>
+    </Design.DataContext>
+
+    <DockPanel>
+        <Border Padding="10" DockPanel.Dock="Top">
+            <StackPanel>
+                <TextBlock Text="PicoControllerWake" 
+                           FontSize="22" 
+                           Margin="0,0,0,10"/>
+                <TextBlock Text="Wake your computer using a Bluetooth device." 
+                           FontSize="14" 
+                           Margin="0,0,0,10"/>
+                <StackPanel Orientation="Horizontal" Spacing="10">
+                    <Button 
+                        Content="{materialIcons:MaterialIconTextExt Kind=Reload, Text=Reload}" 
+                        Command="{Binding ReloadCommand}" />
+                    <Button 
+                        Content="{materialIcons:MaterialIconTextExt Kind=LockReset, Text=Reset Whitelist}" 
+                        Command="{Binding ClearDevicesCommand}" />
+                </StackPanel>
+            </StackPanel>
+        </Border>
+        <ScrollViewer>
+            <Border Padding="10">
+                <ItemsControl ItemsSource="{Binding BluetoothDeviceViews}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Spacing="10"/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                </ItemsControl>
+            </Border>
+        </ScrollViewer>
+    </DockPanel>
+
+</Window>
