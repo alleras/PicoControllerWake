@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using System.Net.NetworkInformation;
 using System.Threading.Tasks;
 using PicoControllerWake_Companion.Enums;
-using PicoControllerWake_Companion.Models;
 
 namespace PicoControllerWake_Companion.Interfaces;
 

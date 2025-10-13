@@ -1,15 +1,11 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Net.NetworkInformation;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using PicoControllerWake_Companion.Enums;
-using PicoControllerWake_Companion.Extensions;
 using PicoControllerWake_Companion.Interfaces;
-using PicoControllerWake_Companion.Models;
-using PicoControllerWake_Companion.Services;
 
 namespace PicoControllerWake_Companion.ViewModels;
 

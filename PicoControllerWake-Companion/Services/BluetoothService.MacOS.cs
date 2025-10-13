@@ -10,7 +10,7 @@ namespace PicoControllerWake_Companion.Services;
 public partial class BluetoothService
 {
     // ReSharper disable once InconsistentNaming
-    private async Task<List<BluetoothDevice>> GetPairedDevicesMacOS()
+    private static async Task<List<BluetoothDevice>> GetPairedDevicesMacOS()
     {
         var process = new Process
         {

@@ -55,8 +55,8 @@ public class SerialController : IDisposable
     private static string StripDebugLines(string serialCommandResponse)
     {
         var lines = serialCommandResponse
-            .Split('\n', StringSplitOptions.None)
-            .Where(line => !line.StartsWith("DEBUG|"))
+            .Split('\n')
+            .Where(line => !line.StartsWith("DEBUG|", StringComparison.InvariantCulture))
             .ToArray();
 
         return string.Join("\n", lines);

@@ -28,7 +28,7 @@ public static partial class SerialDetector
             return match.Success ? match.Value : null;
         }
 
-        return devicePath.StartsWith("/dev/") ? devicePath : null;
+        return devicePath.StartsWith("/dev/", StringComparison.InvariantCulture) ? devicePath : null;
     }
 
     [System.Text.RegularExpressions.GeneratedRegex(@"COM\d+")]

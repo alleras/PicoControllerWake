@@ -4,7 +4,7 @@ namespace PicoControllerWake_Companion.Models;
 
 public class BluetoothDevice
 {
-    public string Name { get; set; }
+    public string Name { get; private set; }
     public PhysicalAddress MacAddress { get; private set; }
 
     public BluetoothDevice(string name, PhysicalAddress macAddress)

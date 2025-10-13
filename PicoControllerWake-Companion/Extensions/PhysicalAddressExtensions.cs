@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Linq;
 using System.Net.NetworkInformation;
 
@@ -7,6 +8,6 @@ public static class PhysicalAddressExtensions
 {
     public static string ToFormattedMacAddress(this PhysicalAddress address)
     {
-        return string.Join(":", address.GetAddressBytes().Select(b => b.ToString("X2")));
+        return string.Join(":", address.GetAddressBytes().Select(b => b.ToString("X2", CultureInfo.InvariantCulture)));
     }
 }
