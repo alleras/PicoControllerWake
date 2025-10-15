@@ -4,33 +4,21 @@ using HidSharp;
 
 namespace PicoControllerWake_Companion.Services;
 
-public static partial class SerialDetector
+public static class SerialDetector
 {
+    private static bool IsDeviceProductName(SerialDevice device, string productName)
+    {
+        return device.DevicePath.Contains(productName, StringComparison.OrdinalIgnoreCase) ||
+               (OperatingSystem.IsWindows() && (
+                   device.GetProductName().Contains(productName, StringComparison.OrdinalIgnoreCase)
+               ));
+    }
+    
     public static SerialDevice? FindSerialDevice(string productName)
     {
-        // Find device using HidSharp
         var deviceList = DeviceList.Local;
         var devices = deviceList.GetSerialDevices();
         
-        var picoDevice = devices
-            .FirstOrDefault(s => s.DevicePath.Contains(productName, StringComparison.OrdinalIgnoreCase));
-        
-        return picoDevice;
+        return devices.FirstOrDefault(d => IsDeviceProductName(d, productName));;
     }
-    public static string? GetPortName(SerialDevice device)
-    {
-        var devicePath = device.GetFileSystemName();
-        
-        // Windows: extract COM port
-        if (devicePath.Contains("COM"))
-        {
-            var match = ComPortRegex().Match(devicePath);
-            return match.Success ? match.Value : null;
-        }
-
-        return devicePath.StartsWith("/dev/", StringComparison.InvariantCulture) ? devicePath : null;
-    }
-
-    [System.Text.RegularExpressions.GeneratedRegex(@"COM\d+")]
-    private static partial System.Text.RegularExpressions.Regex ComPortRegex();
 }

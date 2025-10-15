@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.NetworkInformation;
 using System.Threading.Tasks;
-using PicoControllerWake_Companion.Enums;
+using PicoControllerWake_Companion.Constants;
 using PicoControllerWake_Companion.Extensions;
 using PicoControllerWake_Companion.Interfaces;
 
@@ -14,7 +14,7 @@ public class WakeBridgeService : IWakeBridgeService
     private readonly SerialController _serialController = new();
     private bool _isInitialized;
 
-    public async Task<(bool, SerialConnectionErrors?)> InitializeAsync()
+    public async Task<(bool, string?)> InitializeAsync()
     {
         if (_isInitialized) return(true, null);
         
@@ -23,8 +23,16 @@ public class WakeBridgeService : IWakeBridgeService
         {
             return (false, SerialConnectionErrors.PicoWakeBridgeNotFound);
         }
+
+        try
+        {
+            await _serialController.ConnectAsync(pico.GetFileSystemName());
+        }
+        catch(Exception ex)
+        {
+            return (false, $"Failed to connect to {pico.GetFileSystemName()}: {ex.Message}");
+        }
         
-        await _serialController.ConnectAsync(pico.GetFileSystemName());
         _isInitialized = true;
         return (true, null);
     }
@@ -39,6 +47,7 @@ public class WakeBridgeService : IWakeBridgeService
         }
 
         return response.Split('\n').Skip(1)
+            .Select(s => s.Trim())
             .Select(PhysicalAddress.Parse);
     }
 

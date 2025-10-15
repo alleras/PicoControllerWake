@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Net.NetworkInformation;
+using System.Runtime.Versioning;
 using System.Text.Json;
 using System.Threading.Tasks;
 using PicoControllerWake_Companion.Models;
@@ -10,6 +12,7 @@ namespace PicoControllerWake_Companion.Services;
 public partial class BluetoothService
 {
     // ReSharper disable once InconsistentNaming
+    [SupportedOSPlatform("macos")]
     private static async Task<List<BluetoothDevice>> GetPairedDevicesMacOS()
     {
         var process = new Process
@@ -41,10 +44,23 @@ public partial class BluetoothService
 
     private static void AddDevicesFromProperty(JsonElement bluetoothData, string propertyName, List<BluetoothDevice> devices)
     {
-        if (!bluetoothData.TryGetProperty(propertyName, out var devicesList))
+        if (!bluetoothData.TryGetProperty(propertyName, out var jsonDevicesList))
             return;
 
-        foreach (var arrayElement in devicesList.EnumerateArray())
+        /* TODO: Try in Mac OS
+         
+        var devicesList = jsonDevicesList
+            .EnumerateArray()
+            .SelectMany(arrayElement => arrayElement.EnumerateObject())
+            .Select(deviceObj => new BluetoothDevice(
+                deviceObj.Name,
+                PhysicalAddress.Parse(deviceObj.Value.GetProperty("device_address").GetString()!)
+            ));
+        
+        devices.AddRange(devicesList);
+        */
+
+        foreach (var arrayElement in jsonDevicesList.EnumerateArray())
         {
             foreach (var deviceObj in arrayElement.EnumerateObject())
             {

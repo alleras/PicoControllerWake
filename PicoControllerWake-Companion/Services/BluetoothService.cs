@@ -11,15 +11,15 @@ public partial class BluetoothService : IBluetoothService
 {
     public async Task<List<BluetoothDevice>> GetPairedDevicesAsync()
     {
-        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+        if (OperatingSystem.IsWindows())
         {
             return await GetPairedDevicesWindows();
         }
-        if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+        if (OperatingSystem.IsMacOS())
         {
             return await GetPairedDevicesMacOS();
         }
-        if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+        if (OperatingSystem.IsLinux())
         {
             return await GetPairedDevicesLinux();
         }

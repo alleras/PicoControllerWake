@@ -19,7 +19,9 @@ public partial class BluetoothDeviceViewModel : ViewModelBase
     [ObservableProperty] private string _address;
     [ObservableProperty] private bool _isWhitelisted;
 
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
     public BluetoothDeviceViewModel()
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
     {
         _macAddress = PhysicalAddress.None;
         Name = "Test Device";

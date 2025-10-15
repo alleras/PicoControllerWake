@@ -1,9 +1,11 @@
+using System;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
-using Avalonia.Data.Core;
 using Avalonia.Data.Core.Plugins;
 using System.Linq;
+using Avalonia.Controls.Notifications;
 using Avalonia.Markup.Xaml;
+using Avalonia.Threading;
 using Microsoft.Extensions.DependencyInjection;
 using PicoControllerWake_Companion.Extensions;
 using PicoControllerWake_Companion.ViewModels;
@@ -36,7 +38,16 @@ public partial class App : Application
             {
                 DataContext = viewModel
             };
+            
+            ToastNotifications.Initialize(desktop.MainWindow);
         }
+        
+        Dispatcher.UIThread.UnhandledException += (s, e) =>
+        {
+            e.Handled = true;
+            Console.WriteLine(e.Exception);
+            ToastNotifications.Show(e.Exception.Message, NotificationType.Error);
+        };
 
         base.OnFrameworkInitializationCompleted();
     }

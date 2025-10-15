@@ -3,6 +3,7 @@ using System.IO.Ports;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.VisualBasic;
 
 namespace PicoControllerWake_Companion.Services;
 
@@ -31,7 +32,12 @@ public class SerialController : IDisposable
     
     public string? SendCommand(string command)
     {
-        if (_serialPort is not { IsOpen: true }) return null;
+        if (_serialPort == null)
+        {
+            throw new InvalidOperationException("Serial port is not initialized");
+        }
+
+        ReconnectIfNeeded();
         
         _serialPort.DiscardInBuffer();
         _serialPort.WriteLine(command);
@@ -50,6 +56,14 @@ public class SerialController : IDisposable
         Console.WriteLine(result);
 
         return StripDebugLines(result);
+    }
+
+    private void ReconnectIfNeeded()
+    {
+        if (_serialPort is { IsOpen: true })
+            return;
+        
+        _serialPort!.Open();
     }
 
     private static string StripDebugLines(string serialCommandResponse)
