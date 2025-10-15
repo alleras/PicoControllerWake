@@ -98,6 +98,7 @@ void tud_suspend_cb(bool remote_wakeup_en) {
 
 void tud_resume_cb(void) {
     cdc_print_debug("USB resumed - PC wake up\n");
+    repeat_blink(4, 100);
 }
 
 // HID callbacks (required by TinyUSB)

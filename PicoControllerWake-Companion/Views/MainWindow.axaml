@@ -6,6 +6,7 @@
         xmlns:materialIcons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia" 
         mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="450"
         Width="400" Height="450"
+        MinWidth="400" MinHeight="450"
         x:Class="PicoControllerWake_Companion.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
         Icon="/Assets/avalonia-logo.ico"

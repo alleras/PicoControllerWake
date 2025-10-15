@@ -47,7 +47,7 @@ public partial class BluetoothService
         if (!bluetoothData.TryGetProperty(propertyName, out var jsonDevicesList))
             return;
 
-        /* TODO: Try in Mac OS
+        /* TODO: Test in Mac OS
          
         var devicesList = jsonDevicesList
             .EnumerateArray()

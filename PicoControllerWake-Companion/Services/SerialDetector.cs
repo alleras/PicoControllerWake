@@ -8,10 +8,14 @@ public static class SerialDetector
 {
     private static bool IsDeviceProductName(SerialDevice device, string productName)
     {
-        return device.DevicePath.Contains(productName, StringComparison.OrdinalIgnoreCase) ||
+        // TODO: Test in Mac OS/Linux
+        return device.ToString().Contains(productName, StringComparison.OrdinalIgnoreCase);
+        /*
+         return device.DevicePath.Contains(productName, StringComparison.OrdinalIgnoreCase) ||
                (OperatingSystem.IsWindows() && (
                    device.GetProductName().Contains(productName, StringComparison.OrdinalIgnoreCase)
                ));
+        */
     }
     
     public static SerialDevice? FindSerialDevice(string productName)

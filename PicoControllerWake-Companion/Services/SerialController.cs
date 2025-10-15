@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.IO.Ports;
 using System.Linq;
 using System.Text;
@@ -26,7 +27,7 @@ public class SerialController : IDisposable
         await Task.Delay(200);
         _serialPort.DiscardInBuffer();
         
-        Console.WriteLine($"Connected to Pico on {portName}");
+        Debug.WriteLine($"Connected to Pico on {portName}");
         return true;
     }
     
@@ -53,7 +54,7 @@ public class SerialController : IDisposable
         }
         
         var result = response.ToString().Trim();
-        Console.WriteLine(result);
+        Debug.WriteLine(result);
 
         return StripDebugLines(result);
     }

@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
+using Avalonia.Controls.Notifications;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using PicoControllerWake_Companion.Interfaces;
@@ -38,21 +39,11 @@ public partial class MainWindowViewModel : ViewModelBase
 
     private async Task InitializeAsync()
     {
-        var wakeBridgeInitialized = false;
-        string? error = null; 
-        try
-        {
-            (wakeBridgeInitialized, error) = await _wakeBridgeService.InitializeAsync();
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine(ex);
-            return;
-        }
+        var (wakeBridgeInitialized, error) = await _wakeBridgeService.InitializeAsync();
         
-        if (!wakeBridgeInitialized)
+        if (!wakeBridgeInitialized && error is not null)
         {
-            //TODO: report errors here
+            ToastNotifications.Show(error,  NotificationType.Error);
             return;
         }
         

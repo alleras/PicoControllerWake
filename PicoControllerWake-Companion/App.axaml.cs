@@ -1,4 +1,4 @@
-using System;
+using System.Diagnostics;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Data.Core.Plugins;
@@ -45,7 +45,7 @@ public partial class App : Application
         Dispatcher.UIThread.UnhandledException += (s, e) =>
         {
             e.Handled = true;
-            Console.WriteLine(e.Exception);
+            Debug.WriteLine(e.Exception);
             ToastNotifications.Show(e.Exception.Message, NotificationType.Error);
         };
 
