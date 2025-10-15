@@ -1,68 +1,50 @@
+using System;
 using System.Collections.Generic;
 using System.Management;
 using System.Net.NetworkInformation;
+using System.Runtime.Versioning;
 using System.Threading.Tasks;
 using PicoControllerWake_Companion.Models;
 
 namespace PicoControllerWake_Companion.Services;
-
 public partial class BluetoothService
 {
-    private async Task<List<BluetoothDevice>> GetPairedDevicesWindows()
+    private static bool IsWindowsBluetoothDeviceIdentifier(string identifier)
     {
-        return await Task.Run(() =>
-        {
-            var devices = new List<BluetoothDevice>();
-            
-            using var searcher = new ManagementObjectSearcher(
-                "SELECT * FROM Win32_PnPEntity WHERE PNPClass='Bluetooth' OR Service='BTHUSB'");
-            
-            foreach (ManagementObject device in searcher.Get())
-            {
-                var name = device["Name"]?.ToString();
-                var deviceId = device["DeviceID"]?.ToString();
-
-                if (string.IsNullOrEmpty(name) || string.IsNullOrEmpty(deviceId))
-                    continue;
-
-                // Extract MAC address from DeviceID (format: BTHENUM\{...}\{MAC_ADDRESS}&...)
-                var macAddress = ExtractMacAddress(deviceId);
-                
-                if (macAddress != null)
-                {
-                    devices.Add(new BluetoothDevice(name, macAddress));
-                }
-            }
-
-            return devices;
-        });
+        return identifier.StartsWith("BTHENUM\\DEV") || identifier.StartsWith("BTHLE\\DEV");
     }
 
-    private static PhysicalAddress? ExtractMacAddress(string deviceId)
+    private static PhysicalAddress ExtractMacAddress(string deviceIdentifier)
     {
-        try
+        // Get the second section of a string like "BTHLE\DEV_macaddresshere\..."
+        var extractedId = deviceIdentifier
+            .Split("\\")[1]
+            .Replace("DEV_", string.Empty, StringComparison.InvariantCulture);
+        
+        return PhysicalAddress.Parse(extractedId);
+    }
+    
+    /// <summary>
+    /// Hacky implementation to get paired Bluetooth devices on Windows. Seems to work though!
+    /// </summary>
+    /// <returns></returns>
+    [SupportedOSPlatform("windows")]
+    private static Task<List<BluetoothDevice>> GetPairedDevicesWindows()
+    {
+        var devices = new List<BluetoothDevice>();
+
+        using var searcher = new ManagementObjectSearcher("Select * from Win32_PnPEntity");
+        foreach (var device in searcher.Get())
         {
-            // DeviceID format often contains MAC like: ...\{XX_XX_XX_XX_XX_XX}&...
-            var parts = deviceId.Split('\\', '&');
-            
-            foreach (var part in parts)
+            var name = device["Name"]?.ToString() ?? "";
+            var id = device["DeviceID"]?.ToString() ?? "";
+
+            if (IsWindowsBluetoothDeviceIdentifier(id))
             {
-                // Look for pattern with underscores (12 hex chars with underscores)
-                if (part.Length == 17 && part.Contains('_'))
-                {
-                    var macString = part.Replace("_", "");
-                    if (macString.Length == 12)
-                    {
-                        return PhysicalAddress.Parse(macString);
-                    }
-                }
+                devices.Add(new BluetoothDevice(name, ExtractMacAddress(id)));
             }
         }
-        catch
-        {
-            // Invalid format
-        }
 
-        return null;
+        return Task.FromResult(devices);
     }
 }
