@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using PicoControllerWake_Companion.Enums;
 using PicoControllerWake_Companion.Interfaces;
 
 namespace PicoControllerWake_Companion.ViewModels;
@@ -38,7 +37,7 @@ public partial class MainWindowViewModel : ViewModelBase
     private async Task InitializeAsync()
     {
         var wakeBridgeInitialized = false;
-        SerialConnectionErrors? error = null; 
+        string? error = null; 
         try
         {
             (wakeBridgeInitialized, error) = await _wakeBridgeService.InitializeAsync();
